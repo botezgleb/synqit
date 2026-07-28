@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: synqit-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - CLIENT_URL=http://localhost:5173
+      - SERVER_PORT=3000
+      - AI_API_KEY=${AI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: always
+  
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: synqit-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - PORT=5173
+    depends_on:
+      - server
+    restart: always
