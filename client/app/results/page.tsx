@@ -102,7 +102,6 @@ export default function ResultsPage() {
         }
       `}</style>
 
-      {/* faint graph-paper texture */}
       <div
         className="absolute inset-0 opacity-[0.3] pointer-events-none"
         style={{
@@ -112,7 +111,6 @@ export default function ResultsPage() {
         }}
       />
 
-      {/* giant translucent time watermark, bleeding off the corner */}
       <div
         aria-hidden
         className="hidden lg:block absolute -right-16 top-24 font-mono font-800 text-[#101014]/[0.05] select-none pointer-events-none leading-none"
@@ -121,7 +119,6 @@ export default function ResultsPage() {
         {mm}:{ss}
       </div>
 
-      {/* diagonal marquee stripe, bleeding full width */}
       <div className="relative z-10 -mt-2 -mx-6 rotate-[-2.5deg] overflow-hidden bg-[#101014] py-2.5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.4)]">
         <div className="marquee-track font-mono text-[13px] sm:text-sm tracking-widest uppercase text-[#F5F3EE]">
           {Array.from({ length: 2 }).map((_, i) => (
@@ -142,7 +139,6 @@ export default function ResultsPage() {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-16">
-        {/* ---------------- headline, deliberately bleeding right ---------------- */}
         <div className="relative -mx-5 sm:-mx-8 px-5 sm:px-8 mb-10 sm:mb-14">
           <span className="font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-[#6B7280] mb-3 block">
             code arena · протокол забега
@@ -161,7 +157,6 @@ export default function ResultsPage() {
           </p>
         </div>
 
-        {/* ---------------- overlapping cards ---------------- */}
         <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-0 items-start">
           {/* time & score card */}
           <section className="relative z-10 lg:rotate-[-1.5deg] lg:-mr-10 bg-[#101014] text-[#F5F3EE] rounded-3xl p-7 sm:p-9 shadow-[0_25px_70px_-15px_rgba(16,16,20,0.45)]">
@@ -212,7 +207,6 @@ export default function ResultsPage() {
             </div>
           </section>
 
-          {/* actions card */}
           <section className="relative z-20 lg:rotate-[1deg] lg:mt-10 lg:-ml-4 bg-white border-2 border-[#101014] rounded-3xl p-7 sm:p-9 shadow-[0_25px_70px_-15px_rgba(16,16,20,0.25)]">
             <div className="absolute -top-5 -right-4 rotate-[8deg] bg-[#FF2D20] text-white font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-lg shadow-[0_8px_20px_-6px_rgba(255,45,32,0.6)]">
               раунд 12 · live

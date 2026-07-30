@@ -1,7 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Request, Response } from "express";
 import cors from "cors";
 import aiRouter from "./ai/aiRoutes";
-import "dotenv/config";
 
 const app = express();
 

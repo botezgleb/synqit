@@ -1,11 +1,10 @@
-version: '3.8'
-
 services:
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
     container_name: synqit-backend
+    network_mode: "host"
     ports:
       - "3000:3000"
     environment:

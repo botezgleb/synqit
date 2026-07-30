@@ -2,6 +2,8 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
+ENV NODE_ENV=development
+RUN npm config set registry https://registry.npmmirror.com/
 RUN npm ci
 
 # BUILD
@@ -10,14 +12,14 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # RUN
 FROM node:20-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -31,7 +33,7 @@ USER nextjs
 
 EXPOSE 5173
 
-ENV PORT 5173
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=5173
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]

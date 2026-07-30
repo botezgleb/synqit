@@ -115,7 +115,6 @@ export default function ChallengePage() {
         }
       `}</style>
 
-      {/* ---------------- header ---------------- */}
       <header className="relative bg-[#101014] text-[#F5F3EE] border-b-4 border-[#FF2D20] px-5 sm:px-6 py-3.5 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-3">
           <span className="h-2 w-2 rounded-full bg-[#17B26A] live-dot" />
@@ -138,7 +137,6 @@ export default function ChallengePage() {
       </header>
 
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
-        {/* ---------------- left: task + results ---------------- */}
         <div className="p-5 sm:p-7 flex flex-col gap-6 overflow-y-auto relative">
           <div
             className="absolute inset-0 opacity-[0.3] pointer-events-none"
@@ -250,7 +248,6 @@ export default function ChallengePage() {
           </div>
         </div>
 
-        {/* ---------------- right: editor ---------------- */}
         <div className="flex flex-col bg-[#101014] h-[500px] lg:h-auto border-t-4 lg:border-t-0 lg:border-l-4 border-[#FF2D20]">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 shrink-0">
             <span className="font-mono text-[11px] text-[#F5F3EE]/40">
