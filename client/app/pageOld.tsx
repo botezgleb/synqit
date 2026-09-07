@@ -4,8 +4,6 @@ import { useState, useEffect, useRef, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { ScrambleText } from "./functions/scrambleEffect";
 
-/* ---------- decorative data (encodes real product facts, not filler) ---------- */
-
 const CODE_LINES: { text: string; cls: string }[][] = [
   [
     { text: "function", cls: "text-[#2547FF]" },
@@ -27,30 +25,6 @@ const CODE_LINES: { text: string; cls: string }[][] = [
   [{ text: "  }", cls: "" }],
   [{ text: "}", cls: "" }],
 ];
-
-/**
- * Background image:
- * Drop your image at /public/bg.jpg (or change the src below).
- * If it fails to load, a soft gradient fallback stays visible instead.
- */
-function AmbientBackground() {
-  return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F3EE] via-[#F1EEE6] to-[#EAE6DB]" />
-      <div className="absolute -top-32 -left-32 w-[480px] h-[480px] bg-[#FF2D20]/10 rounded-full blur-[100px]" />
-      <div className="absolute -bottom-40 -right-24 w-[560px] h-[560px] bg-[#2547FF]/10 rounded-full blur-[110px]" />
-      {/* <img
-        src="/bg.jpg"
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover"
-        onError={(e) => {
-          e.currentTarget.style.display = "none";
-        }}
-      /> */}
-      <div className="absolute inset-0 bg-[#F5F3EE]/15" />
-    </div>
-  );
-}
 
 export default function HomePage() {
   const [nickname, setNickname] = useState("");
@@ -96,7 +70,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen text-[#101014] overflow-x-hidden relative">
+    <main className="min-h-screen bg-[#F5F3EE] text-[#101014] overflow-x-hidden relative">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
@@ -104,24 +78,6 @@ export default function HomePage() {
         .font-display { font-family: 'Space Grotesk', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .font-body { font-family: 'Inter', sans-serif; }
-
-        .glass {
-          background: rgba(255, 255, 255, 0.38);
-          backdrop-filter: blur(28px) saturate(160%);
-          -webkit-backdrop-filter: blur(28px) saturate(160%);
-          border: 1px solid rgba(255, 255, 255, 0.55);
-        }
-        .glass-dark {
-          background: rgba(16, 16, 20, 0.42);
-          backdrop-filter: blur(28px) saturate(160%);
-          -webkit-backdrop-filter: blur(28px) saturate(160%);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-        .glass-strip {
-          background: rgba(16, 16, 20, 0.35);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-        }
 
         .stroke-ink {
           -webkit-text-stroke: 1.5px #101014;
@@ -159,20 +115,25 @@ export default function HomePage() {
         }
       `}</style>
 
-      <AmbientBackground />
+      <div
+        className="absolute inset-0 opacity-[0.3] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#E3E1D8 1px, transparent 1px), linear-gradient(90deg, #E3E1D8 1px, transparent 1px)",
+          backgroundSize: "42px 42px",
+        }}
+      />
 
-      {/* giant translucent timer watermark, bleeding off the corner */}
       <div
         aria-hidden
-        className="hidden lg:block absolute -right-16 top-24 font-mono font-800 text-[#101014]/[0.06] select-none pointer-events-none leading-none"
+        className="hidden lg:block absolute -right-16 top-24 font-mono font-800 text-[#101014]/[0.05] select-none pointer-events-none leading-none"
         style={{ fontSize: "min(26vw, 320px)", transform: "rotate(-6deg)" }}
       >
         {mm}:{ss}
       </div>
 
-      {/* diagonal marquee stripe, bleeding full width */}
-      <div className="relative z-10 -mt-2 -mx-6 rotate-[-2.5deg] overflow-hidden glass-strip py-2.5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.25)]">
-        <div className="marquee-track font-mono text-[13px] sm:text-sm tracking-widest uppercase text-white">
+      <div className="relative z-10 -mt-2 -mx-6 rotate-[-2.5deg] overflow-hidden bg-[#101014] py-2.5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.4)]">
+        <div className="marquee-track font-mono text-[13px] sm:text-sm tracking-widest uppercase text-[#F5F3EE]">
           {Array.from({ length: 2 }).map((_, i) => (
             <span key={i} className="flex items-center shrink-0">
               {Array.from({ length: 6 }).map((_, j) => (
@@ -191,7 +152,6 @@ export default function HomePage() {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-16">
-        {/* ---------------- headline, deliberately bleeding right ---------------- */}
         <div className="relative -mx-5 sm:-mx-8 px-5 sm:px-8 mb-10 sm:mb-14">
           <span className="font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-[#6B7280] mb-3 block">
             <ScrambleText text="synqit " speed={20}/>
@@ -201,29 +161,25 @@ export default function HomePage() {
           <h1 className="font-black-display uppercase leading-[0.82] text-[15vw] sm:text-[9vw] lg:text-[7.5vw] tracking-tight">
             <ScrambleText text="Пиши код" speed={20}/>
             <br />
-            <span
-              className="stroke-ink translate-x-3 sm:translate-x-10 lg:translate-x-16 inline-block"
-            >
+            <span className="stroke-ink translate-x-3 sm:translate-x-10 lg:translate-x-16 inline-block">
               <ScrambleText text="быстрее."/>
             </span>
           </h1>
-          <p className="font-body text-[#4B5259] max-w-md mt-6 text-[15px] sm:text-base leading-relaxed">
+          <p className="font-body text-[#6B7280] max-w-md mt-6 text-[15px] sm:text-base leading-relaxed">
             Реальные задачи, живой таймер и соперники за соседним экраном.
             Побеждает не тот, кто знает больше — а тот, кто печатает точнее.
           </p>
         </div>
 
-        {/* ---------------- overlapping cards ---------------- */}
         <div className="relative grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-0 items-start">
-          {/* terminal card */}
-          <section className="relative z-10 lg:rotate-[-1.5deg] lg:-mr-10 glass-dark text-white rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_-15px_rgba(16,16,20,0.35)]">
-            <div className="rounded-2xl bg-[#242428] border border-white/10 overflow-hidden">
+          <section className="relative z-10 lg:rotate-[-1.5deg] lg:-mr-10 bg-[#101014] text-[#F5F3EE] rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_-15px_rgba(16,16,20,0.45)]">
+            <div className="rounded-2xl bg-[#0A0C0E] border border-white/10 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
-                <span className="font-mono text-[11px] text-white/50">
+                <span className="font-mono text-[11px] text-[#F5F3EE]/40">
                   two-sum.js
                 </span>
-                <span className="font-mono text-[11px] text-[#3DDC97] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#3DDC97]" />
+                <span className="font-mono text-[11px] text-[#17B26A] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#17B26A]" />
                   5/5 тестов
                 </span>
               </div>
@@ -233,7 +189,10 @@ export default function HomePage() {
                   {CODE_LINES.map((line, i) => (
                     <div key={i}>
                       {line.map((tok, j) => (
-                        <span key={j} className={tok.cls || "text-white/85"}>
+                        <span
+                          key={j}
+                          className={tok.cls || "text-[#F5F3EE]/85"}
+                        >
                           {tok.text}
                         </span>
                       ))}
@@ -246,25 +205,23 @@ export default function HomePage() {
               </pre>
 
               <div className="flex items-center justify-between px-4 py-3 border-t border-white/10 bg-white/[0.03]">
-                <span className="font-mono text-[11px] text-white/50 uppercase tracking-wider">
+                <span className="font-mono text-[11px] text-[#F5F3EE]/40 uppercase tracking-wider">
                   лучшее время раунда
                 </span>
-                <span className="font-mono text-lg tabular-nums text-white">
+                <span className="font-mono text-lg tabular-nums">
                   {mm}:{ss}
-                  <span className="text-white/40">.{cs}</span>
+                  <span className="text-[#F5F3EE]/40">.{cs}</span>
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between mt-4 px-1 font-mono text-xs text-white/50">
+            <div className="flex items-center justify-between mt-4 px-1 font-mono text-xs text-[#F5F3EE]/40">
               <span>сред. решение · 04:32</span>
               <span>сегодня стартовало · 963</span>
             </div>
           </section>
 
-          {/* login card */}
-          <section className="relative z-20 lg:rotate-[1deg] lg:mt-10 lg:-ml-4 glass rounded-3xl p-7 sm:p-9 shadow-[0_25px_70px_-15px_rgba(16,16,20,0.2)]">
-            {/* sticker badge, overlapping the corner */}
+          <section className="relative z-20 lg:rotate-[1deg] lg:mt-10 lg:-ml-4 bg-white border-2 border-[#101014] rounded-3xl p-7 sm:p-9 shadow-[0_25px_70px_-15px_rgba(16,16,20,0.25)]">
             <div className="absolute -top-5 -right-4 rotate-[8deg] bg-[#FF2D20] text-white font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-lg shadow-[0_8px_20px_-6px_rgba(255,45,32,0.6)]">
               старт через 04:32
             </div>
@@ -273,7 +230,7 @@ export default function HomePage() {
               <h2 className="font-black-display uppercase text-2xl sm:text-3xl tracking-tight">
                 Занять место
               </h2>
-              <p className="font-body text-[#4B5259] text-sm mt-2">
+              <p className="font-body text-[#6B7280] text-sm mt-2">
                 Никнейм — это всё, что тебя отличает на табло.
               </p>
             </div>
@@ -282,12 +239,12 @@ export default function HomePage() {
               <div>
                 <label
                   htmlFor="nickname"
-                  className="font-mono block text-[11px] font-medium uppercase tracking-wider text-[#4B5259] mb-2"
+                  className="font-mono block text-[11px] font-medium uppercase tracking-wider text-[#6B7280] mb-2"
                 >
                   &gt; кто участвует?
                 </label>
                 <div className="relative">
-                  <span className="font-mono absolute left-4 top-1/2 -translate-y-1/2 text-[#4B5259] select-none">
+                  <span className="font-mono absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7280] select-none">
                     &gt;
                   </span>
                   <input
@@ -298,10 +255,10 @@ export default function HomePage() {
                       setNickname(e.target.value);
                       if (error) setError("");
                     }}
-                    placeholder="Your name"
+                    placeholder="tung tung sahur"
                     aria-invalid={!!error}
                     aria-describedby={error ? "nickname-error" : undefined}
-                    className="font-mono w-full pl-9 pr-4 py-3.5 bg-white/50 border border-white/70 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2547FF]/30 focus:border-[#2547FF] text-[#101014] transition-colors placeholder:text-[#6B7280]/60 disabled:opacity-50"
+                    className="font-mono w-full pl-9 pr-4 py-3.5 bg-[#F5F3EE] border-2 border-[#101014]/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2547FF]/30 focus:border-[#2547FF] text-[#101014] transition-colors placeholder:text-[#6B7280]/50 disabled:opacity-50"
                     disabled={isLoading}
                     required
                     autoFocus
@@ -321,28 +278,26 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="font-black-display group w-full py-3.5 bg-[#101014] hover:bg-[#FF2D20] disabled:bg-[#101014]/40 disabled:cursor-not-allowed uppercase tracking-wide text-white rounded-xl transition-colors duration-200 cursor-pointer flex items-center justify-center gap-2 text-sm"
+                className="font-black-display group w-full py-4 bg-[#101014] hover:bg-[#FF2D20] disabled:bg-[#101014]/40 disabled:cursor-not-allowed uppercase tracking-wide text-[#F5F3EE] rounded-xl transition-colors duration-200 cursor-pointer flex items-center justify-center gap-2 text-sm"
               >
                 {isLoading ? (
                   <>
-                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin motion-reduce:animate-none" />
+                    <span className="w-3.5 h-3.5 border-2 border-[#F5F3EE]/30 border-t-[#F5F3EE] rounded-full animate-spin motion-reduce:animate-none" />
                     запуск...
                   </>
                 ) : (
                   <>
                     на старт
-                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                    <span
+                      aria-hidden
+                      className="transition-transform group-hover:translate-x-1"
+                    >
                       →
                     </span>
                   </>
                 )}
               </button>
             </form>
-
-            <div className="mt-8 pt-6 border-t border-white/40 flex items-center justify-between font-mono text-xs text-[#4B5259]">
-              <span>сред. решение · 04:32</span>
-              <span>сегодня стартовало · 963</span>
-            </div>
           </section>
         </div>
       </div>

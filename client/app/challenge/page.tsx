@@ -119,7 +119,7 @@ export default function ChallengePage() {
         <div className="flex items-center gap-3">
           <span className="h-2 w-2 rounded-full bg-[#17B26A] live-dot" />
           <h1 className="font-black-display uppercase text-sm sm:text-base tracking-wider">
-            code arena
+            SYNQIT
           </h1>
           <span className="hidden sm:inline font-mono text-[11px] text-[#F5F3EE]/40 uppercase tracking-widest">
             · тренажёр
