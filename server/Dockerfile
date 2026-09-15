@@ -1,17 +1,17 @@
-# BUILD
-FROM node:22-alpine AS builder
+# Build
+FROM golang:1.27-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+COPY go.mod ./
+RUN go mod download
 COPY . .
-RUN npm run build
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o main .
 
-# RUN
-FROM node:22-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY --from=builder /app/dist ./dist
+# Run
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/main .
+COPY --from=builder /app/.env ./.env
 EXPOSE 3000
-CMD ["node", "dist/server.js"]
+ENV GODEBUG="netdns=go+1"
+CMD ["./main"]

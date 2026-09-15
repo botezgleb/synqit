@@ -274,7 +274,7 @@ export default function HomePage() {
                 Занять место
               </h2>
               <p className="font-body text-[#4B5259] text-sm mt-2">
-                Никнейм — это всё, что тебя отличает на табло.
+                Никнейм - это всё, что тебя отличает на табло.
               </p>
             </div>
 

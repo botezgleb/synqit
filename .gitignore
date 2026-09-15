@@ -2,6 +2,7 @@
 .env*.local
 
 node_modules/
+_legacy_server/
 
 dist/
 .next/
