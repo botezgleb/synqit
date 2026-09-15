@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-	// Автоматически загружаем .env файл средствами Go
 	if err := loadEnv(".env"); err != nil {
 		log.Println("Предупреждение: .env файл не прочитан:", err)
 	}
@@ -52,7 +51,6 @@ func main() {
 	}
 }
 
-// Парсер .env файла без сторонних зависимостей
 func loadEnv(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
