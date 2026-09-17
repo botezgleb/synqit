@@ -14,9 +14,7 @@ import (
 )
 
 type EvaluationResult struct {
-	IsCorrect   bool   `json:"isCorrect"`
 	Cleanliness int    `json:"cleanliness"`
-	Performance int    `json:"performance"`
 	Feedback    string `json:"feedback"`
 }
 
@@ -31,7 +29,7 @@ func NewAIService() *AIService {
 }
 
 func (s *AIService) EvaluateCode(task, userCode string) (*EvaluationResult, error) {
-	log.Println("[AI Service] Пробуем проверить код через основного провайдера (Gemini)...")
+	log.Println("[AI Service] Пробуем проверить чистоту кода через основного провайдера (Gemini)...")
 	result, err := s.tryGemini(task, userCode)
 	if err == nil {
 		return result, nil
@@ -54,32 +52,29 @@ func (s *AIService) tryGemini(task, userCode string) (*EvaluationResult, error) 
 		return nil, errors.New("GEMINI_API_KEY отсутствует в env")
 	}
 
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=" + apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + apiKey
 
 	prompt := fmt.Sprintf(`
-Ты — строгое автоматическое жюри на соревновании по программированию.
-        Твоя главная задача — проверить, решает ли код поставленную задачу.
+Ты — Senior JavaScript ментор, проверяющий код на чистый стиль и читаемость.
+ЗАДАЧА: "%s"
+КОД УЧАСТНИКА: "%s"
 
-        АЛГОРИТМ ОЦЕНКИ (СЛЕДУЙ СТРОГО ПО ШАГАМ):
+ТВОЯ ЗАДАЧА:
+1. Оцени чистоту и стиль кода (cleanliness) по шкале от 1 до 10:
+   - Использование понятных имен переменных
+   - Отсутствие мусорного/дублирующегося кода
+   - Лаконичность и соблюдение JS-стандартов
 
-        ШАГ 1: Проверка корректности (isCorrect)
-        - Если код содержит синтаксическую ошибку, не компилируется или возвращает НЕВЕРНЫЙ результат (например, возвращает строку с лишними запятыми вместо чистого результата):
-          УСТАНОВИ СТРОГО: 
-          isCorrect: false
-          cleanliness: 1
-          performance: 1
-          (НЕ ВЫСТАВЛЯЙ 10 БАЛЛОВ, ЕСЛИ КОД РАБОТАЕТ НЕВЕРНО!)
+2. Напиши краткий отзыв (feedback):
+   - НЕ давай готовый код и не называй напрямую точные исправления.
+   - Дай наводящий совет по улучшению стиля, читаемости или логики.
+   - Максимум 2 коротких предложения на русском языке.
 
-        - ИСКЛЮЧИТЕЛЬНО если код полностью выполняет условия задачи и возвращает 100-процентно верный результат:
-          УСТАНОВИ:
-          isCorrect: true
-          cleanliness: от 1 до 10 (оценивай читаемость)
-          performance: от 1 до 10 (оценивай алгоритмическую сложность)
-
-        ШАГ 2: Правила для feedback
-        - Запрещено давать готовый код или напрямую называть функции/методы для исправления (НЕ ПИШИ "используй join('')" или "замени x на y").
-        - Направляй мысли пользователя: укажи на то, ЧТО не так с итоговым результатом (например: "Итоговая строка содержит лишние разделители между символами").
-        - Максимум 2 коротких предложения на русском языке.`, task, userCode)
+Верни ответ СТРОГО в формате JSON:
+{
+  "cleanliness": number,
+  "feedback": "string"
+}`, task, userCode)
 
 	reqBody := map[string]any{
 		"contents": []map[string]any{
@@ -132,16 +127,18 @@ func (s *AIService) tryCohere(task, userCode string) (*EvaluationResult, error) 
 	}
 
 	prompt := fmt.Sprintf(`
-Ты — строгое автоматическое жюри на соревновании по программированию.
+Ты — Senior JavaScript ментор, проверяющий код на чистый стиль и читаемость.
 ЗАДАЧА: "%s"
 КОД УЧАСТНИКА: "%s"
 
-Верни ответ СТРОГО в формате JSON:
+ТВОЯ ЗАДАЧА:
+1. Оцени чистоту и стиль кода (cleanliness) по шкале от 1 до 10. Если код написан идеально в плане читаемости, то смело ставь 10, не надо снижать баллы за отсутствие JSDoc или за названия переменных, если они не мешают читаемости кода.
+2. Напиши краткий наводящий отзыв (feedback) без готового кода (максимум 2 предложения на русском языке).
+
+Верни ответ СТРОГО в формате JSON без разметки markdown:
 {
-  "isCorrect": boolean,
-  "cleanliness": число от 1 до 10,
-  "performance": число от 1 до 10,
-  "feedback": "Наводящий отзыв без прямых ответов"
+  "cleanliness": number,
+  "feedback": "string"
 }`, task, userCode)
 
 	reqBody := map[string]any{
