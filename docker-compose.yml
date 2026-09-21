@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   server:
     build:
@@ -27,3 +29,19 @@ services:
     depends_on:
       - server
     restart: always
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: synqit_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: synqit
+      POSTGRES_PASSWORD: synqit_password
+      POSTGRES_DB: synqit_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
