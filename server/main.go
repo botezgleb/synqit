@@ -10,12 +10,16 @@ import (
 	"strings"
 
 	"server/internal/ai"
+	"server/internal/db"
 )
 
 func main() {
 	if err := loadEnv(".env"); err != nil {
 		log.Println("Предупреждение: .env файл не прочитан:", err)
 	}
+	
+	database := db.InitDB()
+	_ = database
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
