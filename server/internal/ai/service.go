@@ -52,7 +52,7 @@ func (s *AIService) tryGemini(task, userCode string) (*EvaluationResult, error) 
 		return nil, errors.New("GEMINI_API_KEY отсутствует в env")
 	}
 
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=" + apiKey
 
 	prompt := fmt.Sprintf(`
 Ты — Senior JavaScript ментор, проверяющий код на чистый стиль и читаемость.
