@@ -4,16 +4,20 @@ services:
       context: ./server
       dockerfile: Dockerfile
     container_name: synqit-backend
-    network_mode: "host"
     ports:
       - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
+      - HTTP_PROXY=http://host.docker.internal:2080
+      - HTTPS_PROXY=http://host.docker.internal:2080
+      - NO_PROXY=localhost,127.0.0.1,postgres,synqit-frontend
       - CLIENT_URL=http://localhost:5173
       - SERVER_PORT=3000
       - AI_API_KEY=${AI_API_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - DB_HOST=localhost
-      - DB_PORT=5433
+      - DB_HOST=postgres
+      - DB_PORT=5432
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
@@ -27,7 +31,6 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-      network: host
     container_name: synqit-frontend
     ports:
       - "5173:5173"
@@ -50,7 +53,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 3s
       timeout: 3s
       retries: 5
