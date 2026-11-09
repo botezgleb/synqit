@@ -14,7 +14,8 @@ import (
 )
 
 func main() {
-	if err := loadEnv(".env"); err != nil {
+	// В docker .env нет — переменные приходят из docker compose (env_file), это нормально.
+	if err := loadEnv(".env"); err != nil && !os.IsNotExist(err) {
 		log.Println("Предупреждение: .env файл не прочитан:", err)
 	}
 	
@@ -75,7 +76,9 @@ func loadEnv(filename string) error {
 			key := strings.TrimSpace(parts[0])
 			value := strings.TrimSpace(parts[1])
 			value = strings.Trim(value, `"'`)
-			os.Setenv(key, value)
+			if _, exists := os.LookupEnv(key); !exists {
+				os.Setenv(key, value)
+			}
 		}
 	}
 	return scanner.Err()

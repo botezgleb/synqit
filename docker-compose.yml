@@ -1,3 +1,5 @@
+# Все настройки (ключи API, логин/пароль БД, JWT) берутся из server/.env.
+# Запуск: docker compose up --build
 services:
   server:
     build:
@@ -8,20 +10,19 @@ services:
       - "3000:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - ./server/.env
     environment:
-      - HTTP_PROXY=http://host.docker.internal:2080
-      - HTTPS_PROXY=http://host.docker.internal:2080
-      - NO_PROXY=localhost,127.0.0.1,postgres,synqit-frontend
-      - CLIENT_URL=http://localhost:5173
-      - SERVER_PORT=3000
-      - AI_API_KEY=${AI_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      # Значения ниже перекрывают server/.env — внутри docker сети БД доступна по имени сервиса.
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - JWT_SECRET=${JWT_SECRET}
+      - CLIENT_URL=http://localhost:5173
+      - SERVER_PORT=3000
+      # Прокси необязателен. Если нужен — запусти так:
+      #   HTTP_PROXY=http://host.docker.internal:2080 HTTPS_PROXY=http://host.docker.internal:2080 docker compose up
+      - HTTP_PROXY=${HTTP_PROXY:-}
+      - HTTPS_PROXY=${HTTPS_PROXY:-}
+      - NO_PROXY=localhost,127.0.0.1,postgres,synqit-frontend
     depends_on:
       postgres:
         condition: service_healthy
@@ -44,19 +45,24 @@ services:
     image: postgres:16-alpine
     container_name: synqit_postgres
     restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+    env_file:
+      - ./server/.env
+    # Образ postgres ждёт POSTGRES_*, а в server/.env они называются DB_* — пробрасываем.
+    entrypoint:
+      - sh
+      - -c
+      - |
+        export POSTGRES_USER="$$DB_USER" POSTGRES_PASSWORD="$$DB_PASSWORD" POSTGRES_DB="$$DB_NAME"
+        exec docker-entrypoint.sh postgres
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U $${DB_USER} -d $${DB_NAME}"]
       interval: 3s
       timeout: 3s
-      retries: 5
+      retries: 10
 
 volumes:
   postgres_data:

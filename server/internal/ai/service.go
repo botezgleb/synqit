@@ -29,20 +29,16 @@ func NewAIService() *AIService {
 }
 
 func (s *AIService) EvaluateCode(task, userCode string) (*EvaluationResult, error) {
-	log.Println("[AI Service] Пробуем проверить чистоту кода через основного провайдера (Gemini)...")
-	result, err := s.tryGemini(task, userCode)
-	if err == nil {
-		return result, nil
+	// Gemini временно отключён (бесплатный тариф даёт задержки) — используем только Cohere.
+	// Чтобы вернуть Gemini как основной провайдер, снова вызовите s.tryGemini перед Cohere.
+	log.Println("[AI Service] Проверяем чистоту кода через Cohere...")
+
+	result, err := s.tryCohere(task, userCode)
+	if err != nil {
+		return nil, fmt.Errorf("ИИ-сервис недоступен. Cohere: %v", err)
 	}
 
-	log.Printf("[AI Service] Ошибка Gemini: %v. Переключаемся на Cohere...\n", err)
-
-	cohereResult, cohereErr := s.tryCohere(task, userCode)
-	if cohereErr == nil {
-		return cohereResult, nil
-	}
-
-	return nil, fmt.Errorf("все ИИ-сервисы недоступны. Gemini: %v; Cohere: %v", err, cohereErr)
+	return result, nil
 }
 
 // Gemini
